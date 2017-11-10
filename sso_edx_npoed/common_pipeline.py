@@ -1,7 +1,10 @@
 # coding: utf-8
 
 import requests
-from social.exceptions import AuthForbidden
+try:
+    from social_core.exceptions import AuthForbidden
+except ImportError:
+    from social.exceptions import AuthForbidden
 
 
 def try_to_set_password(*args, **kwargs):

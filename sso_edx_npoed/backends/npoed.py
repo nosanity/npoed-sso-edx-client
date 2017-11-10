@@ -2,31 +2,52 @@ import logging
 
 from django.conf import settings
 
-from social.utils import handle_http_errors
-from social.backends.oauth import BaseOAuth2
+try:
+    from social_core.utils import handle_http_errors
+    from social_core.backends.oauth import BaseOAuth2
+    DEFAULT_AUTH_PIPELINE = (
+        'third_party_auth.pipeline.parse_query_params',
+        'social_core.pipeline.social_auth.social_details',
+        'social_core.pipeline.social_auth.social_uid',
+        'social_core.pipeline.social_auth.auth_allowed',
+        'social_core.pipeline.social_auth.social_user',
+        'third_party_auth.pipeline.associate_by_email_if_login_api',
+        'social_core.pipeline.user.get_username',
+        'third_party_auth.pipeline.set_pipeline_timeout',
+        'sso_edx_npoed.common_pipeline.check_active_status',
+        'sso_edx_npoed.pipeline.ensure_user_information',
+        'sso_edx_npoed.common_pipeline.try_to_set_password',
+        'social_core.pipeline.user.create_user',
+        'social_core.pipeline.social_auth.associate_user',
+        'social_core.pipeline.social_auth.load_extra_data',
+        'social_core.pipeline.user.user_details',
+        'third_party_auth.pipeline.set_logged_in_cookies',
+        'third_party_auth.pipeline.login_analytics',
+    )
+except ImportError:
+    from social.utils import handle_http_errors
+    from social.backends.oauth import BaseOAuth2
+    DEFAULT_AUTH_PIPELINE = (
+        'third_party_auth.pipeline.parse_query_params',
+        'social.pipeline.social_auth.social_details',
+        'social.pipeline.social_auth.social_uid',
+        'social.pipeline.social_auth.auth_allowed',
+        'social.pipeline.social_auth.social_user',
+        'third_party_auth.pipeline.associate_by_email_if_login_api',
+        'social.pipeline.user.get_username',
+        'third_party_auth.pipeline.set_pipeline_timeout',
+        'sso_edx_npoed.common_pipeline.check_active_status',
+        'sso_edx_npoed.pipeline.ensure_user_information',
+        'sso_edx_npoed.common_pipeline.try_to_set_password',
+        'social.pipeline.user.create_user',
+        'social.pipeline.social_auth.associate_user',
+        'social.pipeline.social_auth.load_extra_data',
+        'social.pipeline.user.user_details',
+        'third_party_auth.pipeline.set_logged_in_cookies',
+        'third_party_auth.pipeline.login_analytics',
+    )
 
 log = logging.getLogger(__name__)
-
-
-DEFAULT_AUTH_PIPELINE = (
-    'third_party_auth.pipeline.parse_query_params',
-    'social.pipeline.social_auth.social_details',
-    'social.pipeline.social_auth.social_uid',
-    'social.pipeline.social_auth.auth_allowed',
-    'social.pipeline.social_auth.social_user',
-    'third_party_auth.pipeline.associate_by_email_if_login_api',
-    'social.pipeline.user.get_username',
-    'third_party_auth.pipeline.set_pipeline_timeout',
-    'sso_edx_npoed.common_pipeline.check_active_status',
-    'sso_edx_npoed.pipeline.ensure_user_information',
-    'sso_edx_npoed.common_pipeline.try_to_set_password',
-    'social.pipeline.user.create_user',
-    'social.pipeline.social_auth.associate_user',
-    'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details',
-    'third_party_auth.pipeline.set_logged_in_cookies',
-    'third_party_auth.pipeline.login_analytics',
-)
 
 
 class NpoedBackend(BaseOAuth2):

@@ -7,7 +7,10 @@ import logging
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.contrib.auth.models import User
 
-from social.pipeline import partial
+try:
+    from social_core.pipeline import partial
+except ImportError:
+    from social.pipeline import partial
 
 from student.views import create_account_with_params, reactivation_email_for_user
 from student.models import UserProfile, CourseAccessRole
