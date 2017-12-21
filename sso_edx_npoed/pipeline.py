@@ -109,8 +109,6 @@ def ensure_user_information(
         except User.DoesNotExist:
             create_account_with_params(request, data)
             user = request.user
-            user.first_name = data.get('firstname')
-            user.last_name = data.get('lastname')
             user.is_active = True
             user.save()
 
@@ -132,21 +130,7 @@ def ensure_user_information(
         if user.id != 1:
             user.email = data['email']
             user.username = data['username']
-            user.first_name = data['firstname']
-            user.last_name = data['lastname']
             user.save()
-            
-        try:
-            user_profile = UserProfile.objects.get(user=user)
-        except User.DoesNotExist:
-            user_profile = None
-        except User.MultipleObjectsReturned:
-            user_profile = UserProfile.objects.filter(user=user)[0]
-
-        if user_profile:
-            user_profile.name = user.get_full_name()
-            user_profile.goals = json.dumps(data.get('meta', {}))
-            user_profile.save()
 
     user = user or response.get('user')
     if user and not user.is_active:
