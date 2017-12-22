@@ -13,11 +13,7 @@ from rest_framework.response import Response
 
 User = get_user_model()
 
-try:
-    from opaque_keys.edx.keys import CourseKey
-    is_edx = True
-except ImportError:
-    is_edx = False
+from opaque_keys.edx.keys import CourseKey
 
 
 def logout(request, next_page=None,
@@ -44,12 +40,8 @@ class ApiKeyPermission(permissions.BasePermission):
     Check Api key
     """
     def has_permission(self, request, view):
-        if is_edx:
-            setting_name = 'EDX_API_KEY'
-            header_name = 'HTTP_X_EDX_API_KEY'
-        else:
-            setting_name = 'PLP_API_KEY'
-            header_name = 'HTTP_X_PLP_API_KEY'
+        setting_name = 'EDX_API_KEY'
+        header_name = 'HTTP_X_EDX_API_KEY'
         api_key = getattr(settings, setting_name, None)
         if not api_key:
             logging.error('%s not configured' % setting_name)
